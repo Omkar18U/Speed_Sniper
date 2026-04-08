@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speed Sniper — AI Reflex Learning Game</title>
+  <meta name="description" content="Upload any study material and test your knowledge in a fast-paced reflex game powered by Google Gemini AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #0f0a28; }
+    speed-sniper-root { display: block; width: 100vw; height: 100vh; }
+  </style>
+</head>
+<body>
+  <speed-sniper-root
+    api-base="http://localhost:3000/api/v1"
+  ></speed-sniper-root>
+  <script type="module" src="./index.js"></script>
+</body>
+</html>

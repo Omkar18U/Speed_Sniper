@@ -1,0 +1,30 @@
+{
+  "name": "@speed-sniper/ui",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/js:swc",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "options": {
+          "main": "packages/ui/src/main.ts",
+          "outputPath": "dist/packages/ui",
+          "tsConfig": "packages/ui/tsconfig.app.json"
+        }
+      },
+      "serve-static": {
+        "executor": "@nx/web:file-server",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@speed-sniper/ui:build",
+          "spa": true
+        }
+      }
+    }
+  }
+}

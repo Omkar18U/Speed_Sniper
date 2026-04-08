@@ -1,0 +1,230 @@
+openapi: 3.0.0
+info:
+  title: Speed Sniper API
+  description: Edge-case educational reflex game powered by Gemini AI.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Local development server
+
+components:
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  path:
+                    type: string
+                  message:
+                    type: string
+
+    SessionCreation:
+      type: object
+      required:
+        - resourceText
+      properties:
+        resourceText:
+          type: string
+          minLength: 10
+        fileName:
+          type: string
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+          default: medium
+        rounds:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 10
+
+    SessionResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        status:
+          type: string
+        resourceSummary:
+          type: string
+        difficulty:
+          type: string
+        rounds:
+          type: array
+          items:
+            $ref: '#/components/schemas/Round'
+
+    Round:
+      type: object
+      properties:
+        id:
+          type: string
+        roundNumber:
+          type: integer
+        question:
+          type: string
+        tokens:
+          type: array
+          items:
+            $ref: '#/components/schemas/Token'
+        tokenLifetimeMs:
+          type: integer
+
+    Token:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        isCorrect:
+          type: boolean
+        spawnY:
+          type: number
+        driftSpeedPx:
+          type: number
+
+    TapRequest:
+      type: object
+      required:
+        - roundId
+        - selectedAnswer
+        - tapTimestamp
+      properties:
+        roundId:
+          type: string
+        selectedAnswer:
+          type: string
+        tapTimestamp:
+          type: integer
+
+    RoundResultResponse:
+      type: object
+      properties:
+        roundResult:
+          type: object
+        totalScore:
+          type: integer
+        combo:
+          type: integer
+        nextRoundIndex:
+          type: integer
+        gameComplete:
+          type: boolean
+
+paths:
+  /sessions:
+    post:
+      summary: Create a new game session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionCreation'
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          description: Validation error or resource too large
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /sessions/{id}:
+    get:
+      summary: Get session status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Session status
+        '404':
+          description: Session not found
+
+    delete:
+      summary: Delete a session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Session deleted
+        '404':
+          description: Session not found
+
+  /sessions/{id}/tap:
+    post:
+      summary: Process a token tap
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TapRequest'
+      responses:
+        '200':
+          description: Tap processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoundResultResponse'
+
+  /sessions/{id}/miss:
+    post:
+      summary: Process a missed token
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [roundId]
+              properties:
+                roundId: { type: string }
+      responses:
+        '200':
+          description: Miss processed
+
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: API is healthy
