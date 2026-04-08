@@ -102,7 +102,7 @@ app.use(errorHandler);
 
 export { app };
 
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   const port = process.env.PORT || 3000;
   const server = app.listen(port, () => {
     console.log(`Speed Sniper API listening at http://localhost:${port}/api/v1`);
