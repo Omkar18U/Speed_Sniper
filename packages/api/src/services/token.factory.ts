@@ -1,5 +1,5 @@
 // packages/api/src/services/token.factory.ts
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import { Round, Token, Difficulty } from '../models/types';
 
 interface GeminiRound {
@@ -67,7 +67,7 @@ export function buildRound(
     const spawnY = laneCenter + rand(-1, 1);
 
     return {
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       text: answer.text,
       isCorrect: answer.isCorrect,
       spawnY,
@@ -80,7 +80,7 @@ export function buildRound(
   });
 
   return {
-    id: uuidv4(),
+    id: crypto.randomUUID(),
     sessionId,
     roundNumber,
     question: geminiRound.question,

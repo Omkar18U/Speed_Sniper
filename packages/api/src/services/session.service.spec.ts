@@ -2,7 +2,7 @@
 import { SessionService } from './session.service';
 import { Session, Round, Difficulty } from '../models/types';
 import { store } from '../store/session.store';
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
 // Mock the store
 jest.mock('../store/session.store', () => ({

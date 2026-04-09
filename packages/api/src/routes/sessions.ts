@@ -1,7 +1,7 @@
 // packages/api/src/routes/sessions.ts
 import { Router } from 'express';
 import { store } from '../store/session.store';
-import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import { Session, Difficulty } from '../models/types';
 import { getGeminiService } from '../services/gemini.service';
 import { buildRound } from '../services/token.factory';
@@ -17,7 +17,7 @@ router.post('/', validate(CreateSessionSchema), async (req, res, next) => {
     return res.status(400).json({ error: { code: 'RESOURCE_TOO_LARGE', message: 'Resource text exceeds 500KB limit' } });
   }
 
-  const sessionId = uuidv4();
+  const sessionId = crypto.randomUUID();
 
   // Create the session in 'generating' state
   const initialSession: Session = {
