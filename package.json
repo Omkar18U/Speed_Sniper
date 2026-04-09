@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "nx run-many -t build"
+    "build": "nx run-many -t build",
+    "build:vercel": "npx tsc -p packages/api/tsconfig.build.json && npx nx run-many -t build"
   },
   "private": true,
   "devDependencies": {
